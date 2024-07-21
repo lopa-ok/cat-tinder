@@ -1,18 +1,44 @@
-const apiUrl = 'https://api.thecatapi.com/v1/images/search';
+const catApiUrl = 'https://api.thecatapi.com/v1/images/search';
+const randomUserApiUrl = 'https://randomuser.me/api/';
+const baconIpsumApiUrl = 'https://baconipsum.com/api/?type=meat-and-filler&paras=1&format=text';
+
+async function fetchCatImage() {
+    try {
+        const response = await fetch(catApiUrl);
+        const data = await response.json();
+        return data[0].url;
+    } catch (error) {
+        console.error('Error fetching cat image:', error);
+    }
+}
+
+async function fetchRandomName() {
+    try {
+        const response = await fetch(randomUserApiUrl);
+        const data = await response.json();
+        return data.results[0].name.first;
+    } catch (error) {
+        console.error('Error fetching random name:', error);
+    }
+}
+
+async function fetchRandomBio() {
+    try {
+        const response = await fetch(baconIpsumApiUrl);
+        const data = await response.text();
+        return data;
+    } catch (error) {
+        console.error('Error fetching random bio:', error);
+    }
+}
 
 async function fetchCatProfile() {
-    try {
-        const response = await fetch(apiUrl);
-        const data = await response.json();
-        const catProfile = {
-            name: 'Random Cat', // Since the API doesn't provide a name, we use a placeholder still wip
-            image: data[0].url,
-            bio: 'A lovely cat looking for a match.' // Placeholder bio still wip
-        };
-        return catProfile;
-    } catch (error) {
-        console.error('Error fetching cat profile:', error);
-    }
+    const [image, name, bio] = await Promise.all([fetchCatImage(), fetchRandomName(), fetchRandomBio()]);
+    return {
+        name: name,
+        image: image,
+        bio: bio
+    };
 }
 
 async function loadProfile() {
