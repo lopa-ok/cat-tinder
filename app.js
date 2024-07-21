@@ -1,6 +1,22 @@
 const catApiUrl = 'https://api.thecatapi.com/v1/images/search';
 const randomUserApiUrl = 'https://randomuser.me/api/';
-const baconIpsumApiUrl = 'https://baconipsum.com/api/?type=meat-and-filler&paras=1&format=text';
+
+const bios = [
+    'Loves to cuddle and play with yarn.',
+    'Enjoys long naps in the sun.',
+    'A curious explorer.',
+    'Loves chasing laser pointers.',
+    'Prefers quiet and cozy spots.',
+    'An energetic bundle of joy.',
+    'Loves climbing trees.',
+    'A friendly and social cat.',
+    'Always up for an adventure.',
+    'A little shy but very affectionate.'
+];
+
+function getRandomElement(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+}
 
 async function fetchCatImage() {
     try {
@@ -22,18 +38,9 @@ async function fetchRandomName() {
     }
 }
 
-async function fetchRandomBio() {
-    try {
-        const response = await fetch(baconIpsumApiUrl);
-        const data = await response.text();
-        return data;
-    } catch (error) {
-        console.error('Error fetching random bio:', error);
-    }
-}
-
 async function fetchCatProfile() {
-    const [image, name, bio] = await Promise.all([fetchCatImage(), fetchRandomName(), fetchRandomBio()]);
+    const [image, name] = await Promise.all([fetchCatImage(), fetchRandomName()]);
+    const bio = getRandomElement(bios);
     return {
         name: name,
         image: image,
